@@ -12,6 +12,19 @@ contract AllTest {
     address public tmpaddr;
     mapping(uint => bool) public mappedUint;
     mapping(address => bool) public mappedAddress;
+    mapping(address => Balance) mappedAddressBalance;
+    mapping(uint  => mapping(uint => bool)) uintUintBoolMapping;
+
+    struct Payment {
+        uint amount;
+        uint timestamp;
+    }
+
+    struct Balance {
+        uint totalBalance;
+        uint numPayments;
+        mapping(uint => Payment) payment;
+    }
 
     constructor() {
         owner = msg.sender;
@@ -44,22 +57,26 @@ contract AllTest {
         paused = _pause;
     }
 
-    function receiveMoney() public payable {
+    function receiveMoneyNotTracked() public payable {
         balanceReceive += msg.value;
         lockedUntil = block.timestamp + 30 seconds;
     }
 
-    function receiveMoney2() public payable {
-        balanceReceive2 += msg.value;
-        //lockedUntil = block.timestamp + 30 seconds;
+    function receiveMoneyTracked() public payable {
+        mappedAddressBalance[msg.sender].totalBalance += msg.value;
+        Payment memory payment = Payment(msg.value,block.timestamp);
+        mappedAddressBalance[msg.sender].payment[mappedAddressBalance[msg.sender].numPayments] = payment;
+        mappedAddressBalance[msg.sender].numPayments++;
+        lockedUntil = block.timestamp + 30 seconds;
     }
 
-    function withdrawMoney(uint _amount, address payable _to) public {
-        require(_amount <= balanceReceive,"Not enought liquidity");
+    function withdrawMoneyOwnerOnly(uint _amount, address payable _to) public {
+        require(_amount <= mappedAddressBalance[msg.sender].totalBalance,"Not enought liquidity");
         require(owner == msg.sender, "you are not the smarth contract owner");
         require(paused == false, "smarth contract paused");
-        if(lockedUntil < block.timestamp){
-            balanceReceive -= _amount;
+        
+        if(lockedUntil < block.timestamp){ 
+            mappedAddressBalance[msg.sender].totalBalance -= _amount;
             _to.transfer(_amount);
         }
     }
@@ -77,5 +94,13 @@ contract AllTest {
 
     function setAddressToTrue() public {
         mappedAddress[msg.sender] = true;
+    }
+
+    function setUintUintBoolMapping(uint _index1, uint _index2, bool _value) public {
+        uintUintBoolMapping[_index1][_index2] = _value;
+    }
+
+    function getUintUintBoolMapping(uint _index1, uint _index2) view public returns (bool) {
+        return uintUintBoolMapping[_index1][_index2];
     }
 }
