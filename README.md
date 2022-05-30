@@ -1,1 +1,2 @@
 # remix
+General solidity snippets
