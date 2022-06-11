@@ -5,7 +5,8 @@ pragma solidity 0.8.1;
 import "./Allowance.sol";
 
 contract SharedWallet is Allowance {
-
+    //The indexed parameters for logged events will allow you to search for these events using the indexed parameters as filters. 
+    //Only relevant to logged events. 
     event MoneySent(address indexed _beneficiary, uint _amount);
     event MoneyReceived(address indexed _from, uint _amount);
 
