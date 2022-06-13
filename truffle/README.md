@@ -11,3 +11,5 @@ nvm intall node 12
 3. install truffle:
 
 npm install -g truffle
+
+4. install Visual Studio code and extentions: solidity and "solidity visual developer"
