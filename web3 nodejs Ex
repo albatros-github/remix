@@ -1,0 +1,19 @@
+
+# initenvironment & install web3 ~/applications/nodejs/projects/test
+npm init -y
+
+npm install --save web3
+
+# enter node environment
+node
+
+let Web3 = require("web3");
+
+let web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+
+web3.eth.getBalance("0xc062dc43249C6EAfe206f5e7138C5c6FB8aC9Fb5").then(console.log);
+
+web3.eth.getBalance("0xc062dc43249C6EAfe206f5e7138C5c6FB8aC9Fb5").then(function(result) { console.log(web3.utils.fromWei(result,"ether")) });
+
+web3.eth.sendTransaction({from: "0xc062dc43249C6EAfe206f5e7138C5c6FB8aC9Fb5", to: "0x764d3eb38ebaa8268979b7f3604358d4C91Adb6F", value: web3.utils.toWei("1","ether")});
+
